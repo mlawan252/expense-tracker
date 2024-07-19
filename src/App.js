@@ -1,23 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import ExpensesList from "./components/ExpensesList";
+import ExpenseSummary from "./components/ExpenseSummary";
+import Form from "./components/Form";
+import Header from "./components/Header";
 
 function App() {
+  const [income, setIncome] = useState("");
+  const [expenses, setExpenses] = useState([]);
+
+  function addExpense(expense) {
+    setExpenses((expenses) => [...expenses, expense]);
+  }
+
+  function deleteExpense(exp) {
+    setExpenses(expenses.filter((expense) => expense !== exp));
+  }
+
+  const totalExpenses = expenses.reduce(
+    (acc, expense) => acc + expense.amount,
+    0
+  );
+  const balance = income - totalExpenses;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Header
+        onChange={setIncome}
+        income={income}
+        totalExpenses={totalExpenses}
+      />
+      <div className="form-expense-list">
+        <Form onAddExpenses={addExpense} income={income} balance={balance} />
+        <ExpensesList expensesList={expenses} onDeleteExpense={deleteExpense} />
+      </div>
+      <ExpenseSummary
+        income={income}
+        totalExpenses={totalExpenses}
+        balance={balance}
+      />
     </div>
   );
 }
